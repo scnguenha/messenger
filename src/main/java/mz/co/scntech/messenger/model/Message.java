@@ -1,20 +1,27 @@
 
 package mz.co.scntech.messenger.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Sidónio Goenha on Aug 20, 2020
  *
  */
-
 public class Message {
 
 	private long id;
 	private String message;
 	private Date created;
 	private String author;
+	private Map<Long, Comment> comments = new HashMap<>();
+	private List<Link> links = new ArrayList<>();
 
 	public Message() {
 
@@ -58,5 +65,29 @@ public class Message {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	@XmlTransient
+	public Map<Long, Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Map<Long, Comment> comments) {
+		this.comments = comments;
+	}
+
+	public List<Link> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
+	
+	public void addLink(String url, String rel) {
+		Link link = new Link();
+		link.setLink(url);
+		link.setRel(rel);
+		links.add(link);
 	}
 }

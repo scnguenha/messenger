@@ -14,8 +14,12 @@ import mz.co.scntech.messenger.model.Profile;
  *
  */
 public class ProfileService {
-	
+
 	private Map<String, Profile> profiles = DatabaseClass.getProfiles();
+
+	public ProfileService() {
+		profiles.put("sidy", new Profile(1, "sidynguenha", "Sidy", "Nguenha"));
+	}
 
 	public List<Profile> getAllProfiles() {
 		return new ArrayList<Profile>(profiles.values());
@@ -32,7 +36,7 @@ public class ProfileService {
 	}
 
 	public Profile updateProfile(Profile profile) {
-		if (profile.getId() <= 0) {
+		if (profile.getProfileName().isEmpty()) {
 			return null;
 		}
 
