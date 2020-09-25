@@ -2,6 +2,7 @@
 package mz.co.scntech.messenger.resources;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -22,37 +23,50 @@ import mz.co.scntech.messenger.model.User;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
-	
+
+	@GET
+	public List<User> getUsers()
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Connect connect = new Connect();
+		List<User> users = connect.getUsers();
+		connect.closeConnection();
+		return users;
+	}
+
 	@GET
 	@Path("/{userId}")
-	public User getUser(@PathParam("userId") int id) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public User getUser(@PathParam("userId") int id)
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connect connect = new Connect();
 		User user = connect.getUser(id);
 		connect.closeConnection();
 		return user;
 	}
-	
+
 	@POST
-	public User addUser(User user) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public User addUser(User user)
+			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Connect connect = new Connect();
 		user = (User) connect.insertUser(user);
 		connect.closeConnection();
 		return user;
 	}
-	
+
 	@PUT
 	@Path("/{userId}")
-	public User update(@PathParam("userId") int id, User user) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public User update(@PathParam("userId") int id, User user)
+			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		user.setId(id);
 		Connect connect = new Connect();
 		connect.updateUser(user);
 		connect.closeConnection();
 		return user;
 	}
-	
+
 	@DELETE
 	@Path("/{userId}")
-	public void deleteUser(@PathParam("userId") int id) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public void deleteUser(@PathParam("userId") int id)
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connect connect = new Connect();
 		connect.deleteUser(id);
 	}

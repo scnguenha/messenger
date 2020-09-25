@@ -3,13 +3,21 @@ package mz.co.scntech.messenger.model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 /**
  *
  * @author Sidónio Goenha on Aug 24, 2020
  *
  */
+@Entity
 public class Comment {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String message;
 	private Date created;

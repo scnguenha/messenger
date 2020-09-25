@@ -6,6 +6,7 @@ package mz.co.scntech.messenger.model;
  * @author Sidónio Goenha on Aug 24, 2020
  *
  */
+
 public class Link {
 	private String link;
 	private String rel;

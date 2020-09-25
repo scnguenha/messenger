@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import mz.co.scntech.messenger.dao.MessageDAO;
 import mz.co.scntech.messenger.model.Message;
 import mz.co.scntech.messenger.service.MessageService;
 
@@ -43,55 +44,47 @@ public class MessageResource {
 			return messageService.getAllMessagesPaginated(filterBean.getStart(), filterBean.getSize());
 		}
 
-		return messageService.getAllMessages();
+		return MessageDAO.findAll(Message.class);
 	}
 
 	@GET
 	@Path("/{messageId}")
 	public Message getMessage(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
-		Message message = messageService.getMessage(id);
+		Message message = MessageDAO.findById(Message.class, id);
+
 		message.addLink(getUriForSelf(uriInfo, message), "self");
-		message.addLink(getUriForProfile(uriInfo, message), "profile"); 
-		message.addLink(getUriForComments(uriInfo, message), "comments"); 
-		
+		message.addLink(getUriForProfile(uriInfo, message), "profile");
+		message.addLink(getUriForComments(uriInfo, message), "comments");
+
 		return message;
 	}
-	
+
 	private String getUriForComments(UriInfo uriInfo, Message message) {
-		String uri = uriInfo.getBaseUriBuilder()
-				.path(MessageResource.class)
-				.path(MessageResource.class, "getCommentResource")
-				.path(CommentResource.class)
-				.resolveTemplate("messageId", message.getId())
-				.build()
-				.toString();
-		
+		String uri = uriInfo.getBaseUriBuilder().path(MessageResource.class)
+				.path(MessageResource.class, "getCommentResource").path(CommentResource.class)
+				.resolveTemplate("messageId", message.getId()).build().toString();
+
 		return uri;
 	}
-	
+
 	private String getUriForProfile(UriInfo uriInfo, Message message) {
-		String uri = uriInfo.getBaseUriBuilder()
-				.path(ProfileResource.class)
-				.path(message.getAuthor())
-				.build()
+		String uri = uriInfo.getBaseUriBuilder().path(ProfileResource.class).path(message.getAuthor()).build()
 				.toString();
-		
+
 		return uri;
 	}
 
 	private String getUriForSelf(UriInfo uriInfo, Message message) {
-		String uri = uriInfo.getBaseUriBuilder()
-				.path(MessageResource.class)
-				.path(Long.toString(message.getId()))
-				.build()
-				.toString();
-		
+		String uri = uriInfo.getBaseUriBuilder().path(MessageResource.class).path(Long.toString(message.getId()))
+				.build().toString();
+
 		return uri;
 	}
 
 	@POST
 	public Response addMessage(Message message, @Context UriInfo uriInfo) {
-		Message newMessage = messageService.addMessage(message);
+		
+		Message newMessage = MessageDAO.save(message);
 		URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(newMessage.getId())).build();
 		return Response.created(uri).entity(newMessage).build();
 	}
@@ -100,13 +93,13 @@ public class MessageResource {
 	@Path("/{messageId}")
 	public Message updateMessage(@PathParam("messageId") long id, Message message) {
 		message.setId(id);
-		return messageService.updateMessage(message);
+		return MessageDAO.update(message);
 	}
 
 	@DELETE
 	@Path("/{messageId}")
 	public Message deleteMessage(@PathParam("messageId") long id) {
-		return messageService.removeMessage(id);
+		return MessageDAO.delete(id);
 	}
 
 	@Path("/{messageId}/comments")

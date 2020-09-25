@@ -12,8 +12,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import mz.co.scntech.messenger.dao.CommentDAO;
 import mz.co.scntech.messenger.model.Comment;
-import mz.co.scntech.messenger.service.CommentService;
 
 /**
  *
@@ -25,22 +25,23 @@ import mz.co.scntech.messenger.service.CommentService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class CommentResource {
 
-	private CommentService commentService = new CommentService();
-
 	@GET
 	public List<Comment> getAllComments(@PathParam("messageId") long messageId) {
-		return commentService.getAllComments(messageId);
+		// return commentService.getAllComments(messageId);
+		return CommentDAO.findAll(Comment.class);
 	}
 
 	@GET
 	@Path("/{commentId}")
 	public Comment getComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
-		return commentService.getComment(messageId, commentId);
+		// return commentService.getComment(messageId, commentId);
+		return CommentDAO.getComment(messageId, commentId);
 	}
 
 	@POST
 	public Comment addMessage(@PathParam("messageId") long messageId, Comment comment) {
-		return commentService.addComment(messageId, comment);
+		// return commentService.addComment(messageId, comment);
+		return CommentDAO.addComment(messageId, comment);
 	}
 
 	@PUT
@@ -48,12 +49,14 @@ public class CommentResource {
 	public Comment updateComment(@PathParam("messageId") long messageId, @PathParam("commentId") long id,
 			Comment comment) {
 		comment.setId(id);
-		return commentService.updateComment(messageId, comment);
+		// return commentService.updateComment(messageId, comment);
+		return CommentDAO.updateComment(messageId, comment);
 	}
 
 	@DELETE
 	@Path("/{commentId}")
 	public void deleteComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
-		commentService.removeComment(messageId, commentId);
+		// commentService.removeComment(messageId, commentId);
+		CommentDAO.removeComment(messageId, commentId);
 	}
 }

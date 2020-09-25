@@ -7,6 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
@@ -14,13 +21,19 @@ import jakarta.xml.bind.annotation.XmlTransient;
  * @author Sidónio Goenha on Aug 20, 2020
  *
  */
+@Entity
 public class Message {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String message;
 	private Date created;
 	private String author;
+	
+	@ElementCollection(targetClass = String.class)
 	private Map<Long, Comment> comments = new HashMap<>();
+
 	private List<Link> links = new ArrayList<>();
 
 	public Message() {
@@ -68,6 +81,7 @@ public class Message {
 	}
 
 	@XmlTransient
+	@Transient
 	public Map<Long, Comment> getComments() {
 		return comments;
 	}
@@ -83,7 +97,7 @@ public class Message {
 	public void setLinks(List<Link> links) {
 		this.links = links;
 	}
-	
+
 	public void addLink(String url, String rel) {
 		Link link = new Link();
 		link.setLink(url);

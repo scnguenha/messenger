@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -133,6 +135,35 @@ public class Connect {
 
 		}
 		return user;
+	}
+	
+	public List<User> getUsers() {
+
+		List<User> users = new ArrayList<User>();
+		try {
+
+			PreparedStatement preparedStatement = con.prepareStatement("select * from user");
+			
+			ResultSet rs = preparedStatement.executeQuery();
+			
+			while (rs.next()) {
+
+				User user = new User();
+				user.setId(rs.getInt(1));
+				user.setUsername(rs.getString(2));
+				user.setPassword(rs.getString(3));
+				user.setAddress(rs.getString(4));
+				user.setEmail(rs.getString(5));
+				users.add(user);
+
+			}
+
+		} catch (SQLException ex) {
+			Logger lgr = Logger.getLogger(Connect.class.getName());
+			lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+		}
+		return users;
 	}
 
 	public void deleteUser(int id) {
